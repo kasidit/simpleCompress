@@ -26,19 +26,19 @@ $
 You should see timing reports of the compression and uncompression operation
 <pre>
 $ ./zzz compd
-</pre>
+></pre>
 <p><p>
 <h2>4. Do compression and then trasfer result to detination and uncompress the data</h2>
-<p><p>
-You have to modify the zzz.c and change IP address of the server machine. Copy zzz.c to 
+<p><p>You have to modify the zzz.c and change IP address of the server machine. Copy zzz.c to 
 a client and server computers. Compile the program on both machines, and then run them. 
 <p><p>
 <b>On server machine:</b><br>
 <pre>
 $ ./zzz serd
 </pre>
-<b>Then on the client run:</b>
+r<b>Then on the client run:</b>
 <pre>
+
 $./zzz clid
 </pre>
 See and use the timing reports as you wish. 
@@ -46,10 +46,55 @@ See and use the timing reports as you wish.
 <h2>5. Trasfer plain data across machines</h2>
 <p><p>
 <b>On server machine:</b><br>
-<pre>
+<<pre>
 $ ./zzz sern
+
 </pre>
 <b>On the client:</b>
 <pre>
 $./zzz clin
+</pre>
+<p><p>
+<h2>6. Compress any file and compress and transfer it</h2>
+<p><p>
+I have written another program that will take any file and transfer to any destination. It's the zzz2.c file. 
+You have to make a copy of this file on the source and destination computer, and then compile it. 
+<pre>
+$ make zzz2
+</pre>
+<b>On server computer (192.168.8.12):</b>
+<pre>
+$ wget http://sun.aei.polsl.pl/~sdeor/corpus/mozilla.bz2
+$ bunzip2 mozilla.bz2
+$ ./zzz2 serd mozilla 192.168.8.12 5050
+</pre>
+<b>On client computer:</b>
+<pre>
+$ wget http://sun.aei.polsl.pl/~sdeor/corpus/mozilla.bz2
+$ bunzip2 mozilla.bz2
+$ ./zzz2 clid mozilla 192.168.8.12 5050
+</pre>
+<p><p>
+<h2>7. Just transfer data</h2>
+<p><p>
+<b>On server computer (192.168.8.12):</b>
+<pre>
+$ ./zzz2 sern mozilla 192.168.8.12 5050
+</pre>
+<b>On server computer (192.168.8.12):</b>
+<pre>
+$ ./zzz2 clin mozilla 192.168.8.12 5050
+</pre>
+<h2>8. Transfer data over a compression pipeline</h2>
+<p><p>
+<b>On server computer (192.168.8.12):</b>
+terminal 1<br>
+<pre>
+$ ./zzz2 sern mozilla 192.168.8.12 5050
+</pre>
+terminal 2<br>
+
+<b>On server computer (192.168.8.12):</b>
+<pre>
+$ ./zzz2 clin mozilla 192.168.8.12 5050
 </pre>
