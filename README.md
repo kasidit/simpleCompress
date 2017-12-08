@@ -20,7 +20,7 @@ $ ls
 ... datafile
 $
 </pre>
-p><p>
+<p><p>
 <h2>2. Do compression and then uncompress the data</h2>
 <p><p>
 You should see timing reports of the compression and uncompression operation
