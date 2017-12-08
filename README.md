@@ -1,5 +1,5 @@
 # simpleCompress
-<h1>Simple Compression and Data Transfer programs between two machines.</n1>
+<h1>Simple Compression and Data Transfer programs between two machines.</h1>
 <p><p>
 This program is written to test simple data compression and data transfer relationship. 
 It uses compress() and uncompress() of zlib library to compress and uncompress data, respectively. 
