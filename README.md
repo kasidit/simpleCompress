@@ -105,3 +105,23 @@ terminal 2<br>
 <pre>
 $ ./zzz2 clin mozilla 127.0.0.1 4403
 </pre>
+<h2>9. How to set network interface speed using ethtool</h2>
+<p><p>
+set to 100 Mbps
+<b>On server computer (192.168.8.12):</b><br>
+<pre>
+$ sudo ethtool -s eth3 speed 100 duplex full
+</pre>
+<b>On client computer:</b><br>
+<pre>
+$ sudo ethtool -s eth3 speed 100 duplex full
+</pre>
+set to 1000 Mbps
+<b>On server computer (192.168.8.12):</b><br>
+<pre>
+$ sudo ethtool -s eth3 speed 1000 duplex full
+</pre>
+<b>On client computer:</b><br>
+<pre>
+$ sudo ethtool -s eth3 speed 1000 duplex full
+</pre>
