@@ -26,7 +26,7 @@ $
 You should see timing reports of the compression and uncompression operation
 <pre>
 $ ./zzz compd
-></pre>
+</pre>
 <p><p>
 <h2>4. Do compression and then trasfer result to detination and uncompress the data</h2>
 <p><p>You have to modify the zzz.c and change IP address of the server machine. Copy zzz.c to 
