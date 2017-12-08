@@ -29,17 +29,17 @@ $ ./zzz compd
 </pre>
 <p><p>
 <h2>4. Do compression and then trasfer result to detination and uncompress the data</h2>
-<p><p>You have to modify the zzz.c and change IP address of the server machine. Copy zzz.c to 
+<p><p>
+You have to modify the zzz.c and change IP address of the server machine. Copy zzz.c to 
 a client and server computers. Compile the program on both machines, and then run them. 
 <p><p>
 <b>On server machine:</b><br>
 <pre>
 $ ./zzz serd
 </pre>
-r<b>Then on the client run:</b>
+<b>Then on the client run:</b><br>
 <pre>
-
-$./zzz clid
+$ ./zzz clid
 </pre>
 See and use the timing reports as you wish. 
 <p><p>
@@ -48,9 +48,8 @@ See and use the timing reports as you wish.
 <b>On server machine:</b><br>
 <<pre>
 $ ./zzz sern
-
 </pre>
-<b>On the client:</b>
+<b>On the client:</b><br>
 <pre>
 $./zzz clin
 </pre>
@@ -94,7 +93,7 @@ $ ./zzz2 sern mozilla 127.0.0.1 5050
 </pre>
 terminal 2<br>
 <pre>
-nc -l 5503 | lz4 -qq -d -c - | nc 127.0.0.1 5050
+$ nc -l 5503 | lz4 -qq -d -c - | nc 127.0.0.1 5050
 </pre>
 <b>On client computer:</b><br>
 terminal 1<br>
