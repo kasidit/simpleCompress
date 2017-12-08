@@ -55,7 +55,7 @@ $ ./zzz sern
 $./zzz clin
 </pre>
 <p><p>
-<h2>6. Compress any file and compress and transfer it</h2>
+<h2>6. Compress a file and compress and transfer to a destination host</h2>
 <p><p>
 I have written another program that will take any file and transfer to any destination. It's the zzz2.c file. 
 You have to make a copy of this file on the source and destination computer, and then compile it. 
@@ -79,22 +79,29 @@ $ ./zzz2 clid mozilla 192.168.8.12 5050
 <p><p>
 <b>On server computer (192.168.8.12):</b>
 <pre>
-$ ./zzz2 sern mozilla 192.168.8.12 5050
+$ ./zzz2 sern mozilla 127.0.0.1 5050
 </pre>
-<b>On server computer (192.168.8.12):</b>
+<b>On client computer:</b>
 <pre>
 $ ./zzz2 clin mozilla 192.168.8.12 5050
 </pre>
-<h2>8. Transfer data over a compression pipeline</h2>
+<h2>8. Transfer data over an lz4 compression tunnel (using netcat)</h2>
 <p><p>
 <b>On server computer (192.168.8.12):</b>
 terminal 1<br>
 <pre>
-$ ./zzz2 sern mozilla 192.168.8.12 5050
+$ ./zzz2 sern mozilla 127.0.0.1 5050
 </pre>
 terminal 2<br>
-
-<b>On server computer (192.168.8.12):</b>
 <pre>
-$ ./zzz2 clin mozilla 192.168.8.12 5050
+nc -l 5503 | lz4 -qq -d -c - | nc 127.0.0.1 5050
+</pre>
+<b>On client computer:</b>
+terminal 1<br>
+<pre>
+$ nc -l 4403 | lz4 -qq -1 -B4 -c - | nc 192.168.8.12 5503
+</pre>
+terminal 2<br>
+<pre>
+$ ./zzz2 clin mozilla 127.0.0.1 4403
 </pre>
