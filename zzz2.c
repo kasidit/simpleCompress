@@ -24,7 +24,6 @@ char b[DATASIZE];
 char c[DATASIZE];
 
 #define OPTIONSIZE  4
-#define CREATEDATA  "data"
 #define COMPAREDATA  "cmpd"
 #define CLIENTCMDDATA  "clid"
 #define SERVERCMDDATA  "serd"
@@ -43,74 +42,65 @@ int main(int argc, char *argv[]){
 
     int x, n; 
     int tx_size; 
+    int dataSize; 
 
-    if(argc != 2){
-      printf("reqire 2 arguments\n"); 
+    if(argc != 3){
+      printf("reqire 2 arguments: cmd filename\n"); 
       exit(1);  
     }
 
     printf(" argv[1] = %s\n", argv[1]); 
-
-    strcpy(str1, CREATEDATA); 
-
-    if(strncmp(argv[1], str1,OPTIONSIZE)==0){
-
-      // initialize a 
-      for (x = 0; x < DATASIZE; x++){
-        a[x] = (rand() % 127); 
-        // if ( x < 10 ) printf(" a [ %d ] = %d\n", x, a[x]); 
-      }
-
-      int fd = open("datafile", O_CREAT | O_WRONLY | O_APPEND, 0755); 
-
-      if (fd == -1){
-        printf("\n open() failed with error [%s]\n",strerror(errno));
-        exit(1);
-      }
-      else{
-        printf("\n Open() Successful\n");
-      }
-
-      for (x = 0; x < DATASIZE; x += DATABLOCK){
-        n = write(fd, &a[x], DATABLOCK); 
-      }
-
-      close(fd); 
-
-      printf("fd = %d arraysize = %d  writexsize = %d n = %d\n", fd, DATASIZE, x, n ); 
-
-      exit(0); 
-    }
+    printf(" argv[2] = %s\n", argv[2]); 
 
     strcpy(str1, COMPAREDATA); 
 
     if(strncmp(argv[1], str1,OPTIONSIZE)==0){
 
-      printf("load datafile\n"); 
+      printf("load datafile %s\n", argv[2]); 
       
       gettimeofday(&begin, NULL);
 
-      int fd = open("./datafile", O_RDONLY); 
+      int fd; 
 
-      for (x = 0; x < DATASIZE; x += DATABLOCK){
-        read(fd, &a[x], DATABLOCK); 
+      if((fd = open(argv[2], O_RDONLY)) < 0){
+        printf("cannot open %s\n", argv[2]); 
+        exit(1); 
+      } 
+
+      printf("reading contents of %s\n", argv[2]); 
+
+      x = 0; 
+      while(1){
+        n = read(fd, &a[x], DATABLOCK);  
+        if (n == 0){
+          printf("end of file is reached\n"); 
+          break; 
+        }
+        else if(n < 0){
+          printf("error while reading abort!\n"); 
+          exit(1); 
+        }
+        x += n; 
       }
+
+      dataSize = x; 
 
       gettimeofday(&end, NULL);
 
       elapsed = (end.tv_sec - begin.tv_sec) + 
               (((double)(end.tv_usec - begin.tv_usec))/1000000.0);
 
-      printf("readfileTime:%lf: loaded arraysize = %d  readxsize = %d\n", elapsed, DATASIZE, x ); 
+      printf("loading input file time = %lf loaded file size = %d\n", elapsed, dataSize); 
 
       close(fd); 
 
       gettimeofday(&begin, NULL);
 
-      uLong ucompSize = DATASIZE; 
+
+      uLong ucompSize = dataSize; 
       uLong compSize = compressBound(ucompSize);
 
-      printf(" before compress: ucompSize = %ld , compSize = %ld\n", ucompSize, compSize); 
+      printf(" before compress: uncompress size = %ld  initial compress size = %ld\n", ucompSize, compSize); 
       // Deflate
       compress((Bytef *)b, &compSize, (Bytef *)a, ucompSize);
 
@@ -119,7 +109,8 @@ int main(int argc, char *argv[]){
       elapsed = (end.tv_sec - begin.tv_sec) + 
               (((double)(end.tv_usec - begin.tv_usec))/1000000.0);
 
-      printf(" after compress:compressTime:%lf: compSize = %ld\n", elapsed, compSize); 
+      printf(" after compress: compress time = %lf compress Size = %ld, compression ratio = %lf\n", 
+           elapsed, compSize, ((double)((double) ucompSize/(double) compSize))); 
 
       gettimeofday(&begin, NULL);
       // Inflate
@@ -130,16 +121,16 @@ int main(int argc, char *argv[]){
       elapsed = (end.tv_sec - begin.tv_sec) + 
               (((double)(end.tv_usec - begin.tv_usec))/1000000.0);
 
-      printf(" after uncompress:uncompressTime:%lf: ucompSize = %ld \n", elapsed, ucompSize); 
+      printf(" after uncompress: uncompress time = %lf uncompress size = %ld \n", elapsed, ucompSize); 
 
       // verify c and a
-      for (x = 0; x < DATASIZE; x++){
+      for (x = 0; x < dataSize; x++){
         if (c[x] != a[x]){
           printf("compression and decompression error\n"); 
           break; 
         }
       } 
-      if (x == DATASIZE) printf("compression correct\n"); 
+      if (x == dataSize) printf("verification: compression correct\n"); 
 
     }
 
@@ -156,18 +147,37 @@ int main(int argc, char *argv[]){
       
       gettimeofday(&begin, NULL);
 
-      int fd = open("./datafile", O_RDONLY); 
+      int fd; 
 
-      for (x = 0; x < DATASIZE; x += DATABLOCK){
-        read(fd, &a[x], DATABLOCK); 
+      if((fd = open(argv[2], O_RDONLY)) < 0){
+        printf("cannot open %s\n", argv[2]); 
+        exit(1); 
+      } 
+
+      printf("reading contents of %s\n", argv[2]); 
+
+      x = 0; 
+      while(1){
+        n = read(fd, &a[x], DATABLOCK);  
+        if (n == 0){
+          printf("end of file is reached\n"); 
+          break; 
+        }
+        else if(n < 0){
+          printf("error while reading abort!\n"); 
+          exit(1); 
+        }
+        x += n; 
       }
+
+      dataSize = x; 
 
       gettimeofday(&end, NULL);
 
       elapsed = (end.tv_sec - begin.tv_sec) + 
               (((double)(end.tv_usec - begin.tv_usec))/1000000.0);
 
-      printf("readfileTime:%lf: loaded arraysize = %d  readxsize = %d\n", elapsed, DATASIZE, x ); 
+      printf("loading input file time = %lf loaded file size = %d\n", elapsed, dataSize); 
 
       close(fd); 
 
@@ -175,10 +185,10 @@ int main(int argc, char *argv[]){
       
       gettimeofday(&begin, NULL);
 
-      uLong ucompSize = DATASIZE; 
+      uLong ucompSize = dataSize; 
       uLong compSize = compressBound(ucompSize);
 
-      printf(" before compress: ucompSize = %ld , compSize = %ld\n", ucompSize, compSize); 
+      printf(" before compress: uncompress size = %ld  initial compress size = %ld\n", ucompSize, compSize); 
       // Deflate
       compress((Bytef *)b, &compSize, (Bytef *)a, ucompSize);
 
@@ -187,9 +197,10 @@ int main(int argc, char *argv[]){
       elapsed = (end.tv_sec - begin.tv_sec) + 
               (((double)(end.tv_usec - begin.tv_usec))/1000000.0);
 
-      printf(" after compress:compressTime:%lf: compSize = %ld\n", elapsed, compSize); 
+      printf(" after compress: compress time = %lf compress Size = %ld, compression ratio = %lf\n", 
+           elapsed, compSize, ((double)((double) ucompSize/(double) compSize))); 
 
-      strcpy(serverIP, "192.168.6.13"); 
+      strcpy(serverIP, "192.168.6.12"); 
 
       memset(recvBuff, '0',sizeof(recvBuff));
       if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
@@ -246,7 +257,7 @@ int main(int argc, char *argv[]){
       elapsed = (end.tv_sec - begin.tv_sec) + 
               (((double)(end.tv_usec - begin.tv_usec))/1000000.0);
 
-      printf("TxTime of Compressed data:%lf\n", elapsed); 
+      printf(" data transfer time of compressed data:%lf\n", elapsed); 
 
       read_full(sockfd, &dataReceived, sizeof(uLong)); 
 
@@ -272,11 +283,30 @@ int main(int argc, char *argv[]){
       
       gettimeofday(&begin, NULL);
 
-      int fd = open("./datafile", O_RDONLY); 
+      int fd; 
 
-      for (x = 0; x < DATASIZE; x += DATABLOCK){
-        read(fd, &a[x], DATABLOCK); 
+      if((fd = open(argv[2], O_RDONLY)) < 0){
+        printf("cannot open %s\n", argv[2]); 
+        exit(1); 
+      } 
+
+      printf("reading contents of %s\n", argv[2]); 
+
+      x = 0; 
+      while(1){
+        n = read(fd, &a[x], DATABLOCK);  
+        if (n == 0){
+          printf("end of file is reached\n"); 
+          break; 
+        }
+        else if(n < 0){
+          printf("error while reading abort!\n"); 
+          exit(1); 
+        }
+        x += n; 
       }
+
+      dataSize = x; 
 
       gettimeofday(&end, NULL);
 
