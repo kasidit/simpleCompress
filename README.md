@@ -87,7 +87,7 @@ $ ./zzz2 clin mozilla 192.168.8.12 5050
 </pre>
 <h2>8. Transfer data over an lz4 compression tunnel (using netcat)</h2>
 <p><p>
-<b>On server computer (192.168.8.12):</b>
+<b>On server computer (192.168.8.12):</b><br>
 terminal 1<br>
 <pre>
 $ ./zzz2 sern mozilla 127.0.0.1 5050
@@ -96,7 +96,7 @@ terminal 2<br>
 <pre>
 nc -l 5503 | lz4 -qq -d -c - | nc 127.0.0.1 5050
 </pre>
-<b>On client computer:</b>
+<b>On client computer:</b><br>
 terminal 1<br>
 <pre>
 $ nc -l 4403 | lz4 -qq -1 -B4 -c - | nc 192.168.8.12 5503
