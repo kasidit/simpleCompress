@@ -46,7 +46,7 @@ See and use the timing reports as you wish.
 <h2>5. Trasfer plain data across machines</h2>
 <p><p>
 <b>On server machine:</b><br>
-<<pre>
+<pre>
 $ ./zzz sern
 </pre>
 <b>On the client:</b><br>
